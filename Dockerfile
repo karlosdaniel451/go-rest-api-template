@@ -15,7 +15,7 @@ RUN go mod download
 COPY . ./
 
 # Build the executable file.
-RUN go build -v -o api
+RUN go build -v -o server
 
 # Use the official Debian slim image for a lean production container.
 # https://hub.docker.com/_/debian
@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y postgresql-client
 WORKDIR /bin
 
 # Copy the binary to the production image from the builder stage.
-COPY --from=builder /app/server /bin/api
+COPY --from=builder /app/server /bin/server
 
 # Run the web service on container startup.
-ENTRYPOINT [ "/bin/api" ]
+ENTRYPOINT [ "/bin/server" ]
