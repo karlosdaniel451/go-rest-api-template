@@ -17,7 +17,11 @@ var (
 	password = os.Getenv("DB_PASSWORD")
 )
 
-var DB *gorm.DB
+var db *gorm.DB
+
+func GetDB() *gorm.DB {
+	return db
+}
 
 func Connect() error {
 	var err error
@@ -27,13 +31,13 @@ func Connect() error {
 		host, user, password, name, port,
 	)
 
-	DB, err = gorm.Open(postgres.Open(connectionConfig), &gorm.Config{})
+	db, err = gorm.Open(postgres.Open(connectionConfig), &gorm.Config{})
 
 	if err != nil {
 		return err
 	}
 
-	err = DB.AutoMigrate(&model.Task{}) // Setup other models here
+	err = db.AutoMigrate(&model.Task{}) // Setup other models here
 	if err != nil {
 		return err
 	}

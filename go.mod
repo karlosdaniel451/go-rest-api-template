@@ -1,8 +1,11 @@
 module github.com/karlosdaniel451/go-rest-api-template
 
-go 1.20
+go 1.21
 
-require gorm.io/gorm v1.25.2
+require (
+	github.com/swaggo/swag v1.16.1
+	gorm.io/gorm v1.25.2
+)
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
@@ -24,8 +27,8 @@ require (
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
+	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/swaggo/files/v2 v2.0.0 // indirect
-	github.com/swaggo/swag v1.16.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.48.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
