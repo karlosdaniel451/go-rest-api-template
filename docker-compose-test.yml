@@ -1,0 +1,54 @@
+version: "3.8"
+
+volumes:
+  api-db-data:
+
+
+networks:
+  api-network:
+
+
+services:
+  db:
+    container_name: "template_db_test"
+    image: postgres:15.3-bullseye
+    environment:
+      - POSTGRES_USER=${DB_USER_TEST}
+      - POSTGRES_PASSWORD=${DB_PASSWORD_TEST}
+      - POSTGRES_DB=${DB_NAME_TEST}
+    volumes:
+      - api-db-data:/var/lib/postgresql/data
+      - type: tmpfs
+        target: /dev/shm
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: pg_isready -U ${DB_USER} -h localhost -p 5432 --timeout=5
+      interval: 6s
+      timeout: 5s
+      retries: 5
+      start_period: 3s
+    networks:
+      - api-network
+
+  api_test:
+    container_name: "template_api_test"
+    build:
+      context: ./
+      dockerfile: Dockerfile.test
+    environment:
+      - API_PORT=${API_PORT_TEST}
+      - DB_HOST=${DB_HOST_TEST}
+      - DB_USER=${DB_USER_TEST}
+      - DB_PORT=${DB_PORT_TEST}
+      - DB_NAME=${DB_NAME_TEST}
+      - DB_PASSWORD=${DB_PASSWORD_TEST}
+    ports:
+      - "${API_PORT}:${API_PORT_TEST}"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "/usr/bin/psql postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT} -c 'drop database if exists ${DB_NAME}' && /usr/bin/psql postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT} -c 'create database ${DB_NAME}' && go test ./... -v"
+    networks:
+      - api-network

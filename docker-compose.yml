@@ -3,11 +3,14 @@ version: "3.8"
 volumes:
   api-db-data:
 
+
 networks:
   api-network:
 
+
 services:
   db:
+    container_name: "template_db"
     image: postgres:15.3-bullseye
     environment:
       - POSTGRES_USER=${DB_USER}
@@ -23,11 +26,12 @@ services:
       - api-network
 
   api:
+    container_name: "template_api"
     build:
       context: ./
       dockerfile: Dockerfile
     environment:
-      - API_PORT=${API_PORT} 
+      - API_PORT=${API_PORT}
       - DB_HOST=${DB_HOST}
       - DB_USER=${DB_USER}
       - DB_PORT=${DB_PORT}
@@ -38,8 +42,6 @@ services:
     depends_on:
       - db
     command: >
-      bash -c "/usr/bin/psql postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}
-      -c 'drop database if exists ${DB_NAME}' && /usr/bin/psql
-      postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT} -c 'create database ${DB_NAME}'"
+      bash -c "/usr/bin/psql postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT} -c 'drop database if exists ${DB_NAME}' && /usr/bin/psql postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT} -c 'create database ${DB_NAME}'"
     networks:
       - api-network

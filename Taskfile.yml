@@ -20,3 +20,16 @@ tasks:
       - task: generate-docs
       - sudo docker compose -f ./docker-compose.yml --env-file .env up
     silent: false
+
+  test:
+    description: Run system containers for test execution using Docker Compose.
+    cmds:
+      - sudo docker compose -f ./docker-compose-test.yml --env-file .env up
+      # - sudo docker exec -it template_api_test /bin/sh -c "go test ./... -v"
+    silent: false
+
+  test-build:
+    description: Run tests using Docker Compose.
+    cmds:
+      - sudo docker compose -f ./docker-compose-test.yml --env-file .env up --build
+    silent: false
