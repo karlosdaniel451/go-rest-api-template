@@ -2,34 +2,34 @@ version: '3'
 
 tasks:
   generate-docs:
-    descrition: Generate OpenAPI documention in the docs folder.
+    desc: Generate OpenAPI documention in the docs folder.
     cmds:
       - swag init --parseDependency --parseInternal --generalInfo ./cmd/main.go
     silent: false
 
   start-build:
-    description: Build and run system containers using Docker Compose.
+    desc: Build and run system containers using Docker Compose.
     cmds:
       - task: generate-docs
       - sudo docker compose -f ./docker-compose.yml --env-file .env up --build
     silent: false
 
   start:
-    description: Run system containers using Docker Compose.
+    desc: Run system containers using Docker Compose.
     cmds:
       - task: generate-docs
       - sudo docker compose -f ./docker-compose.yml --env-file .env up
     silent: false
 
   test:
-    description: Run system containers for test execution using Docker Compose.
+    desc: Run system containers for test execution using Docker Compose.
     cmds:
       - sudo docker compose -f ./docker-compose-test.yml --env-file .env up
       # - sudo docker exec -it template_api_test /bin/sh -c "go test ./... -v"
     silent: false
 
   test-build:
-    description: Run tests using Docker Compose.
+    desc: Run tests using Docker Compose.
     cmds:
       - sudo docker compose -f ./docker-compose-test.yml --env-file .env up --build
     silent: false
