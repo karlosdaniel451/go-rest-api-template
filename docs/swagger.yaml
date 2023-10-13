@@ -1,4 +1,18 @@
 definitions:
+  github_com_karlosdaniel451_go-rest-api-template_domain_model.CreateTask:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    type: object
+  github_com_karlosdaniel451_go-rest-api-template_domain_model.CreateUser:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+    type: object
   github_com_karlosdaniel451_go-rest-api-template_domain_model.Task:
     properties:
       createdAt:
@@ -11,6 +25,27 @@ definitions:
         type: integer
       name:
         type: string
+      updatedAt:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  github_com_karlosdaniel451_go-rest-api-template_domain_model.User:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      tasks:
+        items:
+          $ref: '#/definitions/github_com_karlosdaniel451_go-rest-api-template_domain_model.Task'
+        type: array
       updatedAt:
         type: string
     type: object
@@ -99,4 +134,119 @@ paths:
       summary: Get a Task by its id.
       tags:
       - Tasks
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get all Users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_karlosdaniel451_go-rest-api-template_domain_model.User'
+            type: array
+      summary: Get all Users.
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Create a new User.
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_karlosdaniel451_go-rest-api-template_domain_model.CreateUser'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_karlosdaniel451_go-rest-api-template_domain_model.CreateUser'
+      summary: Create a new User.
+      tags:
+      - Users
+  /users/{id}:
+    delete:
+      description: Summary Delete an User and, in case there is no Task with the given
+        ID,
+      parameters:
+      - description: Id of the User be deleted
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+      summary: Delete an User by its id.
+      tags:
+      - Users
+    get:
+      description: Get an User by its id.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_karlosdaniel451_go-rest-api-template_domain_model.User'
+        "404":
+          description: Not Found
+      summary: Get an User by its id.
+      tags:
+      - Users
+  /users/{id}/tasks:
+    get:
+      description: Get all Tasks of an User.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_karlosdaniel451_go-rest-api-template_domain_model.Task'
+            type: array
+        "404":
+          description: Not Found
+      summary: Get all Tasks of an User.
+      tags:
+      - Users
+  /users/{user_id}/tasks:
+    post:
+      description: Create a new Task for an User, in case there is no User with the
+        given id,
+      parameters:
+      - description: Task
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_karlosdaniel451_go-rest-api-template_domain_model.CreateTask'
+      - description: Id of the User for whom the Task will be created
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_karlosdaniel451_go-rest-api-template_domain_model.Task'
+      summary: Create a new Task for an User.
+      tags:
+      - Users
 swagger: "2.0"

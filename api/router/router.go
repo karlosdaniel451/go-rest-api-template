@@ -6,9 +6,21 @@ import (
 	"github.com/karlosdaniel451/go-rest-api-template/api/controller"
 )
 
-func Setup(app *fiber.App, taskController *controller.TaskController) {
+func Setup(
+	app *fiber.App,
+	taskController *controller.TaskController,
+	userController *controller.UserController,
+) {
+
 	setupSwagger(app, "/docs/*")
-	setupTaskRouter(app, taskController)
+
+	if taskController != nil {
+		setupTaskRouter(app, taskController)
+	}
+
+	if userController != nil {
+		setupUserRouter(app, userController)
+	}
 }
 
 func setupSwagger(app *fiber.App, path string) {
