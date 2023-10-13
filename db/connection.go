@@ -7,6 +7,7 @@ import (
 	"github.com/karlosdaniel451/go-rest-api-template/domain/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var (
@@ -37,7 +38,7 @@ func Connect() error {
 		return err
 	}
 
-	err = db.AutoMigrate(&model.Task{}) // Setup other models here
+	err = db.AutoMigrate(&model.Task{}, &model.User{})
 	if err != nil {
 		return err
 	}

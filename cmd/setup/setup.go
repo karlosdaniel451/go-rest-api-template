@@ -16,12 +16,15 @@ var (
 
 	// Repositories.
 	TaskRepository repository.TaskRepository
+	UserRepository repository.UserRepository
 
 	// Use cases.
 	TaskUseCase usecase.TaskUseCase
+	UserUseCase usecase.UserUseCase
 
 	// Controllers.
 	TaskController controller.TaskController
+	UserController controller.UserController
 )
 
 func Setup() {
@@ -42,6 +45,11 @@ func Setup() {
 	TaskRepository = repository.NewTaskRepositoryDB(db.GetDB())
 	TaskUseCase = usecase.NewTaskUseCaseImpl(TaskRepository)
 	TaskController = controller.NewTaskController(TaskUseCase)
+
+	// Setup for User.
+	UserRepository = repository.NewUserRepositoryDB(db.GetDB())
+	UserUseCase = usecase.NewUserUseCaseImpl(UserRepository)
+	UserController = controller.NewUserController(UserUseCase, TaskUseCase)
 }
 
 func setupLogger() {
@@ -50,6 +58,11 @@ func setupLogger() {
 }
 
 func assertInterfaces() {
+	// Assertions for Task.
 	var _ usecase.TaskUseCase = usecase.TaskUseCaseImpl{}
 	var _ repository.TaskRepository = repository.TaskRepositoryDB{}
+
+	// Assertions for User.
+	var _ usecase.UserUseCase = usecase.UserUseCaseImpl{}
+	var _ repository.UserRepository = repository.UserRepositoryDB{}
 }

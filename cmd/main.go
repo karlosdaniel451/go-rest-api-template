@@ -26,7 +26,7 @@ func main() {
 
 	middleware.Setup(app)
 
-	router.Setup(app, &setup.TaskController)
+	router.Setup(app, &setup.TaskController, &setup.UserController)
 
 	log.Fatal(app.Listen(":" + port))
 }
