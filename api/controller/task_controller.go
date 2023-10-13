@@ -2,12 +2,12 @@ package controller
 
 import (
 	"errors"
-	"log"
+	"github.com/karlosdaniel451/go-rest-api-template/usecase"
+	"log/slog"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/karlosdaniel451/go-rest-api-template/domain/model"
 	"github.com/karlosdaniel451/go-rest-api-template/errs"
-	"github.com/karlosdaniel451/go-rest-api-template/usecase"
 )
 
 type TaskController struct {
@@ -32,6 +32,10 @@ func (controller TaskController) Create(c *fiber.Ctx) error {
 
 	err := c.BodyParser(&newTask)
 	if err != nil {
+		slog.Error("invalid task data",
+			"error", err,
+			"request_id", c.Locals("requestid"),
+		)
 		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
 			"detail": "invalid task data: " + err.Error(),
 		})
@@ -39,8 +43,12 @@ func (controller TaskController) Create(c *fiber.Ctx) error {
 
 	newTaskAllData, err := controller.taskUseCase.Create(&newTask)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"detail": err.Error(),
+		slog.Error("internal error when creating task",
+			"error", err,
+			"request_id", c.Locals("requestid"),
+		)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"detail": "internal server error",
 		})
 	}
 
@@ -72,8 +80,13 @@ func (controller TaskController) Delete(c *fiber.Ctx) error {
 				"detail": err.Error(),
 			})
 		}
+
+		slog.Error("internal error when deleting task",
+			"error", err,
+			"request_id", c.Locals("requestid"),
+		)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"detail": err.Error(),
+			"detail": "internal server error",
 		})
 	}
 
@@ -103,8 +116,13 @@ func (controller TaskController) GetById(c *fiber.Ctx) error {
 				"detail": err.Error(),
 			})
 		}
+		slog.Error("internal error",
+			"error", err,
+			"request_id", c.Locals("requestid"),
+		)
+
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"detail": err.Error(),
+			"detail": "internal server error",
 		})
 	}
 
@@ -122,9 +140,13 @@ func (controller TaskController) GetById(c *fiber.Ctx) error {
 func (controller TaskController) GetAll(c *fiber.Ctx) error {
 	tasks, err := controller.taskUseCase.GetAll()
 	if err != nil {
-		log.Print(err)
+		slog.Error("internal error",
+			"error", err,
+			"request_id", c.Locals("requestid"),
+		)
+
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"detail": err.Error(),
+			"detail": "internal server error",
 		})
 	}
 
