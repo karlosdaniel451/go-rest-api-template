@@ -1,24 +1,15 @@
-package usecase
+package taskusecaseimpl
 
 import (
 	"github.com/karlosdaniel451/go-rest-api-template/domain/model"
-	"github.com/karlosdaniel451/go-rest-api-template/repository"
+	"github.com/karlosdaniel451/go-rest-api-template/repository/taskrepository"
 )
 
-type TaskUseCase interface {
-	Create(user *model.Task) (*model.Task, error)
-	GetById(id uint) (*model.Task, error)
-	GetByName(name string) ([]*model.Task, error)
-	GetByDescription(description string) ([]*model.Task, error)
-	DeleteById(id uint) error
-	GetAll() ([]*model.Task, error)
-}
-
 type TaskUseCaseImpl struct {
-	taskRepository repository.TaskRepository
+	taskRepository taskrepository.TaskRepository
 }
 
-func NewTaskUseCaseImpl(taskRepository repository.TaskRepository) TaskUseCaseImpl {
+func NewTaskUseCaseImpl(taskRepository taskrepository.TaskRepository) TaskUseCaseImpl {
 	return TaskUseCaseImpl{taskRepository: taskRepository}
 }
 

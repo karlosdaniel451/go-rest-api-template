@@ -5,13 +5,19 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/karlosdaniel451/go-rest-api-template/api/controller"
 	"github.com/karlosdaniel451/go-rest-api-template/config"
+	"github.com/karlosdaniel451/go-rest-api-template/repository/taskrepository"
+	"github.com/karlosdaniel451/go-rest-api-template/repository/taskrepository/taskrepositoryimpl"
+	"github.com/karlosdaniel451/go-rest-api-template/repository/userrepository"
+	"github.com/karlosdaniel451/go-rest-api-template/repository/userrepository/userrepositoryimpl"
+	"github.com/karlosdaniel451/go-rest-api-template/usecase/taskusecase"
+	"github.com/karlosdaniel451/go-rest-api-template/usecase/taskusecase/taskusecaseimpl"
+	"github.com/karlosdaniel451/go-rest-api-template/usecase/userusecase"
+	userusecaseimpl "github.com/karlosdaniel451/go-rest-api-template/usecase/userusecase/user_usecase_impl"
 	"log/slog"
 	"os"
 	"strconv"
 
 	"github.com/karlosdaniel451/go-rest-api-template/db"
-	"github.com/karlosdaniel451/go-rest-api-template/repository"
-	"github.com/karlosdaniel451/go-rest-api-template/usecase"
 )
 
 var (
@@ -19,12 +25,12 @@ var (
 	logger *slog.Logger
 
 	// Repositories.
-	TaskRepository repository.TaskRepository
-	UserRepository repository.UserRepository
+	TaskRepository taskrepository.TaskRepository
+	UserRepository userrepository.UserRepository
 
 	// Use cases.
-	TaskUseCase usecase.TaskUseCase
-	UserUseCase usecase.UserUseCase
+	TaskUseCase taskusecase.TaskUseCase
+	UserUseCase userusecase.UserUseCase
 
 	// Controllers.
 	TaskController controller.TaskController
@@ -49,13 +55,13 @@ func Setup(appConfig *config.AppConfig) error {
 	slog.Info("database session created successfully")
 
 	// Setup for Task.
-	TaskRepository = repository.NewTaskRepositoryDB(db.GetDB())
-	TaskUseCase = usecase.NewTaskUseCaseImpl(TaskRepository)
+	TaskRepository = taskrepositoryimpl.NewTaskRepositoryGORM(db.GetDB())
+	TaskUseCase = taskusecaseimpl.NewTaskUseCaseImpl(TaskRepository)
 	TaskController = controller.NewTaskController(TaskUseCase)
 
 	// Setup for User.
-	UserRepository = repository.NewUserRepositoryDB(db.GetDB())
-	UserUseCase = usecase.NewUserUseCaseImpl(UserRepository)
+	UserRepository = userrepositoryimpl.NewUserRepositoryGORM(db.GetDB())
+	UserUseCase = userusecaseimpl.NewUserUseCaseImpl(UserRepository)
 	UserController = controller.NewUserController(UserUseCase, TaskUseCase)
 
 	return nil
@@ -68,12 +74,12 @@ func setupLogger() {
 
 func assertInterfaces() {
 	// Assertions for Task.
-	var _ usecase.TaskUseCase = usecase.TaskUseCaseImpl{}
-	var _ repository.TaskRepository = repository.TaskRepositoryDB{}
+	var _ taskusecase.TaskUseCase = taskusecaseimpl.TaskUseCaseImpl{}
+	var _ taskrepository.TaskRepository = taskrepositoryimpl.TaskRepositoryGORM{}
 
 	// Assertions for User.
-	var _ usecase.UserUseCase = usecase.UserUseCaseImpl{}
-	var _ repository.UserRepository = repository.UserRepositoryDB{}
+	var _ userusecase.UserUseCase = userusecaseimpl.UserUseCaseImpl{}
+	var _ userrepository.UserRepository = userrepositoryimpl.UserRepositoryGORM{}
 }
 
 func setEnvVariables(appConfig *config.AppConfig) error {

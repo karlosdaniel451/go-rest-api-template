@@ -2,7 +2,7 @@ package controller
 
 import (
 	"errors"
-	"github.com/karlosdaniel451/go-rest-api-template/usecase"
+	"github.com/karlosdaniel451/go-rest-api-template/usecase/taskusecase"
 	"log/slog"
 
 	"github.com/gofiber/fiber/v2"
@@ -11,10 +11,10 @@ import (
 )
 
 type TaskController struct {
-	taskUseCase usecase.TaskUseCase
+	taskUseCase taskusecase.TaskUseCase
 }
 
-func NewTaskController(taskUseCase usecase.TaskUseCase) TaskController {
+func NewTaskController(taskUseCase taskusecase.TaskUseCase) TaskController {
 	return TaskController{taskUseCase: taskUseCase}
 }
 

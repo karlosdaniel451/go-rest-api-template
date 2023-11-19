@@ -1,23 +1,15 @@
-package usecase
+package userusecaseimpl
 
 import (
 	"github.com/karlosdaniel451/go-rest-api-template/domain/model"
-	userRepository "github.com/karlosdaniel451/go-rest-api-template/repository"
+	"github.com/karlosdaniel451/go-rest-api-template/repository/userrepository"
 )
 
-type UserUseCase interface {
-	Create(user *model.User) (*model.User, error)
-	GetById(id uint) (*model.User, error)
-	GetByEmail(email string) (*model.User, error)
-	DeleteById(id uint) error
-	GetAll() ([]*model.User, error)
-}
-
 type UserUseCaseImpl struct {
-	repository userRepository.UserRepository
+	repository userrepository.UserRepository
 }
 
-func NewUserUseCaseImpl(userRepository userRepository.UserRepository) UserUseCaseImpl {
+func NewUserUseCaseImpl(userRepository userrepository.UserRepository) UserUseCaseImpl {
 	return UserUseCaseImpl{repository: userRepository}
 }
 

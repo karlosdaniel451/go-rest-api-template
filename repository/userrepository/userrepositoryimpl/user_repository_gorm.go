@@ -1,30 +1,21 @@
-package repository
+package userrepositoryimpl
 
 import (
 	"fmt"
-
 	"github.com/karlosdaniel451/go-rest-api-template/domain/model"
 	"github.com/karlosdaniel451/go-rest-api-template/errs"
 	"gorm.io/gorm"
 )
 
-type UserRepository interface {
-	Create(user *model.User) (*model.User, error)
-	GetById(id uint) (*model.User, error)
-	GetByEmail(email string) (*model.User, error)
-	DeleteById(id uint) error
-	GetAll() ([]*model.User, error)
-}
-
-type UserRepositoryDB struct {
+type UserRepositoryGORM struct {
 	db *gorm.DB
 }
 
-func NewUserRepositoryDB(db *gorm.DB) *UserRepositoryDB {
-	return &UserRepositoryDB{db: db}
+func NewUserRepositoryGORM(db *gorm.DB) *UserRepositoryGORM {
+	return &UserRepositoryGORM{db: db}
 }
 
-func (repository UserRepositoryDB) Create(user *model.User) (*model.User, error) {
+func (repository UserRepositoryGORM) Create(user *model.User) (*model.User, error) {
 	result := repository.db.Create(user)
 	if result.Error != nil {
 		return nil, fmt.Errorf("it was not possible to insert user: %s", result.Error)
@@ -33,7 +24,7 @@ func (repository UserRepositoryDB) Create(user *model.User) (*model.User, error)
 	return user, nil
 }
 
-func (repository UserRepositoryDB) GetById(id uint) (*model.User, error) {
+func (repository UserRepositoryGORM) GetById(id uint) (*model.User, error) {
 	var user model.User
 
 	result := repository.db.Preload("Tasks").First(&user, id)
@@ -49,7 +40,7 @@ func (repository UserRepositoryDB) GetById(id uint) (*model.User, error) {
 	return &user, nil
 }
 
-func (repository UserRepositoryDB) GetByEmail(email string) (*model.User, error) {
+func (repository UserRepositoryGORM) GetByEmail(email string) (*model.User, error) {
 	var user model.User
 
 	result := repository.db.Preload("Tasks").First(&user, "email = ?", email)
@@ -65,7 +56,7 @@ func (repository UserRepositoryDB) GetByEmail(email string) (*model.User, error)
 	return &user, nil
 }
 
-func (repository UserRepositoryDB) DeleteById(id uint) error {
+func (repository UserRepositoryGORM) DeleteById(id uint) error {
 	var user model.User
 
 	result := repository.db.First(&user, id)
@@ -85,7 +76,7 @@ func (repository UserRepositoryDB) DeleteById(id uint) error {
 	return nil
 }
 
-func (repository UserRepositoryDB) GetAll() ([]*model.User, error) {
+func (repository UserRepositoryGORM) GetAll() ([]*model.User, error) {
 	allUsers := make([]*model.User, 0)
 
 	// result := repository.db.Find(&allUsers)

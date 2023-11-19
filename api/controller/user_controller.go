@@ -2,7 +2,8 @@ package controller
 
 import (
 	"errors"
-	"github.com/karlosdaniel451/go-rest-api-template/usecase"
+	"github.com/karlosdaniel451/go-rest-api-template/usecase/taskusecase"
+	"github.com/karlosdaniel451/go-rest-api-template/usecase/userusecase"
 	"log/slog"
 
 	"github.com/gofiber/fiber/v2"
@@ -11,13 +12,13 @@ import (
 )
 
 type UserController struct {
-	UserUseCase usecase.UserUseCase
-	TakUseCase  usecase.TaskUseCase
+	UserUseCase userusecase.UserUseCase
+	TakUseCase  taskusecase.TaskUseCase
 }
 
 func NewUserController(
-	userUseCase usecase.UserUseCase,
-	taskUseCase usecase.TaskUseCase,
+	userUseCase userusecase.UserUseCase,
+	taskUseCase taskusecase.TaskUseCase,
 ) UserController {
 
 	return UserController{UserUseCase: userUseCase, TakUseCase: taskUseCase}
