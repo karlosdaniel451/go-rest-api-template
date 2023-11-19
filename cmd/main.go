@@ -1,32 +1,28 @@
 package main
 
 import (
-	"log"
-	"os"
-
-	"github.com/gofiber/fiber/v2"
-	"github.com/karlosdaniel451/go-rest-api-template/api/middleware"
-	"github.com/karlosdaniel451/go-rest-api-template/api/router"
+	"fmt"
+	"github.com/karlosdaniel451/go-rest-api-template/api"
 	"github.com/karlosdaniel451/go-rest-api-template/cmd/setup"
+	"github.com/karlosdaniel451/go-rest-api-template/config"
 	_ "github.com/karlosdaniel451/go-rest-api-template/docs"
+	"log/slog"
+	"os"
 )
 
-var port = os.Getenv("API_PORT")
-
-// @title Go REST API Template
-// @version 0.0.1
-// @description Template for a RESTful web service in Go with Fiber.
 func main() {
-	setup.Setup()
+	appConfig := config.NewEmptyAppConfig()
 
-	app := fiber.New(fiber.Config{
-		AppName:           "Simple Go RESTful API with Fiber and GORM",
-		EnablePrintRoutes: true,
-	})
+	if err := setup.Setup(appConfig); err != nil {
+		slog.Error("error when setting up application", "error", err)
+		os.Exit(1)
+	}
 
-	middleware.Setup(app)
-
-	router.Setup(app, &setup.TaskController, &setup.UserController)
-
-	log.Fatal(app.Listen(":" + port))
+	if err := api.StartApp(*appConfig); err != nil {
+		slog.Info(
+			fmt.Sprintf("failed to start RESTful Web Service at %d", appConfig.ListenerPort),
+			"error", err,
+		)
+		os.Exit(1)
+	}
 }
