@@ -9,7 +9,7 @@ import (
 )
 
 type TaskRepository interface {
-	Create(user *model.Task) (*model.Task, error)
+	Create(task *model.Task) (*model.Task, error)
 	GetById(id uint) (*model.Task, error)
 	GetByName(name string) ([]*model.Task, error)
 	GetByDescription(description string) ([]*model.Task, error)
@@ -73,9 +73,9 @@ func (repository TaskRepositoryDB) GetByDescription(description string) ([]*mode
 }
 
 func (repository TaskRepositoryDB) DeleteById(id uint) error {
-	var user model.Task
+	var task model.Task
 
-	result := repository.db.First(&user, id)
+	result := repository.db.First(&task, id)
 	if result.Error != nil {
 		if result.Error.Error() == gorm.ErrRecordNotFound.Error() {
 			return errs.NotFoundError{
@@ -84,7 +84,7 @@ func (repository TaskRepositoryDB) DeleteById(id uint) error {
 		}
 		return result.Error
 	}
-	result = result.Delete(&user)
+	result = result.Delete(&task)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -93,12 +93,12 @@ func (repository TaskRepositoryDB) DeleteById(id uint) error {
 }
 
 func (repository TaskRepositoryDB) GetAll() ([]*model.Task, error) {
-	allUsers := make([]*model.Task, 0)
+	allTasks := make([]*model.Task, 0)
 
-	result := repository.db.Find(&allUsers)
+	result := repository.db.Find(&allTasks)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 
-	return allUsers, nil
+	return allTasks, nil
 }
