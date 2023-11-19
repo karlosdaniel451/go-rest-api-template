@@ -27,11 +27,8 @@ func NewTaskRepositoryDB(db *gorm.DB) *TaskRepositoryDB {
 
 func (repository TaskRepositoryDB) Create(task *model.Task) (*model.Task, error) {
 	result := repository.db.Create(task)
-	if result.RowsAffected == 0 {
-		return nil, fmt.Errorf("it was not possible to insert task: %s", result.Error)
-	}
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, fmt.Errorf("it was not possible to insert task: %s", result.Error)
 	}
 
 	return task, nil
